@@ -8,14 +8,21 @@ const port = 4001
 server.use(json());
 server.use(cors());
 
-server.get('/', (req, res) => { // 
-    res.send("HELLO\n")
+let user = [];
+
+server.get('/', (req, res) => {
+    res.status(200).send(`${user}\n`)
 })
 
 server.post('/', (req, res) => {
     const request = req.body
     console.log(request.user)
     res.status(201).send()
+})
+
+server.delete('/', (req, res) => {
+    user = [];
+    res.status(200).send()
 })
 
 server.listen(port, (req, res)=>{

@@ -11,6 +11,12 @@ Router.get('/', (req, res) =>{
 
 })
 
+Router.get('/user', (req, res) =>{
+    const pathId = req.params.id
+    const user2 = user.filter(user => user.id == pathId).
+    res.status(200).send(user)
+})
+
 Router.post('/', (req, res) => {
 
     const request = req.body

@@ -1,6 +1,8 @@
 const express = require('express')
 const { json } = require('body-parser')
 const cors = require('cors')
+const { query } = require('express')
+
 
 const server = express()
 const port = 4001
@@ -29,6 +31,14 @@ server.delete('/', (req, res) => {
     user = [];
     res.status(200).send()
     contador = 0
+})
+
+server.delet('/query', (req, res) => {
+    const queryid = req.query.id
+
+    filteredlist = user.filter(user => user.id != queryid)
+    user = filteredlist
+    res.status(200).send()
 })
 
 server.put('/:value', (req, res) => {

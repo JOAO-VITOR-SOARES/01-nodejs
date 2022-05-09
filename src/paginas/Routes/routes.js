@@ -1,25 +1,37 @@
 const express = require('express')
 const Router = express.Router()
-const {router} = require('express');
+const { router } = require('express');
+
+const expressValidator = require('express-validator')
 
 let contador = 0
 let user = [];
 
-Router.get('/', (req, res) =>{
+const validate = [
+    expressValidator.check('user').isLength({ min: 1 }).withMessage('Usuarios não encontrado')
+]
+
+Router.get('/', (req, res) => {
 
     res.status(200).send(user)
 
 })
 
-Router.get('/user', (req, res) =>{
+Router.get('/user', (req, res) => {
     const pathId = req.params.id
     const user2 = user.filter(user => user.id == pathId).
-    res.status(200).send(user)
+        res.status(200).send(user)
 })
 
 Router.post('/', (req, res) => {
 
+    const erros = expressValidator.validationResult(req);
+    if (!erros.isEmpty()) {
+        return res.status(422).send({ erros: erros.array() })
+    }
+
     const request = req.body
+    
     const user2 = {
         id: contador += 1,
         user: request.user
@@ -48,7 +60,7 @@ Router.put('/:value', (req, res) => {
     console.log(`QUERY É ${id} E PARÂMETRO É ${value}`)
 
     user.map(user => {
-        if (user.id == id){
+        if (user.id == id) {
             console.log(`ID ENCONTRADO ${id} ALTERANDO O VALOR DO OBJETO`)
             user.user = value
         }

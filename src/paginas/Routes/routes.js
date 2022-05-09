@@ -11,11 +11,15 @@ const validate = [
     expressValidator.check('user').isLength({ min: 1 }).withMessage('Usuarios não encontrado')
 ]
 
-Router.get('/', (req, res) => {
+outer.get('/', auth, (req, res) => {
 
-    res.status(200).send(user)
-
+    user.find().then(users => {
+        res.status(200).send(users);
+    }).catch(error => {
+        res.status(500).send(error)
+    })
 })
+
 
 Router.get('/user', (req, res) => {
     const pathId = req.params.id
@@ -23,49 +27,52 @@ Router.get('/user', (req, res) => {
         res.status(200).send(user)
 })
 
-Router.post('/', (req, res) => {
+Router.post('/', [validate], (req, res) => {
 
     const erros = expressValidator.validationResult(req);
     if (!erros.isEmpty()) {
         return res.status(422).send({ erros: erros.array() })
     }
+    const user = new user({
+        user: req.body.user
+    })
 
-    const request = req.body
-    
-    const user2 = {
-        id: contador += 1,
-        user: request.user
-    }
-    user.push(user2)
-    res.status(201).send()
+    user.save()
+        .then(result => {
+            res.status(201).send(result)
+        })
+
 })
 
-Router.delete('/', (req, res) => {
-    user = [];
-    res.status(200).send()
-    contador = 0
-})
+router.delete('/', (req, res) => {
 
-Router.delete('/query', (req, res) => {
-    const queryid = req.query.id
-
-    filteredlist = user.filter(user => user.id != queryid)
-    user = filteredlist
-    res.status(200).send()
-})
-
-Router.put('/:value', (req, res) => {
-    const value = req.params.value
-    const id = req.query.id
-    console.log(`QUERY É ${id} E PARÂMETRO É ${value}`)
-
-    user.map(user => {
-        if (user.id == id) {
-            console.log(`ID ENCONTRADO ${id} ALTERANDO O VALOR DO OBJETO`)
-            user.user = value
-        }
+    user.deleteMany().then(result => {
+        res.status(200).send()
     });
-    res.send(200).send()
 })
 
+
+router.delete('/query', (req, res) => {
+
+    Temperature.findByIdAndRemove(req.query.id)
+        .then(result => {
+            res.status(200).send(result)
+        }).catch(error => {
+            res.status(404).send()
+        })
+})
+
+router.put('/:value', (req, res) => {
+    const pathValue = req.params.value
+
+    user.findById(req.query.id).then(users => {
+        users.users = pathValue
+        user.save().then(result => {
+            res.status(200).send(result)
+        })
+    }).catch(error => {
+        res.status(404).send()
+    })
+
+})
 module.exports = Router;

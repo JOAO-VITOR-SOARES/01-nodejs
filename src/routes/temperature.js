@@ -48,13 +48,6 @@ router.get('/:id', (req, res) => {
 })
 
 
-// router.get('/clientes', verifyJWT,(req, res) =>{
-//     console.log(req.userId + 'fez esta chamada!');
-//     res.json([{ id: 1, nome: 'joao'}]);
-// })
-
-//CREATE REQUEST - POST
-
 router.post('/login', auth, (req, res) => {
     TemperatureSchema.find().then((temperature) => {
         const token = jwt.sign({ userId: 1 }, SECRET, { expiresIn: 300 })
@@ -63,29 +56,6 @@ router.post('/login', auth, (req, res) => {
         res.status(402).end()
     })
 })
-
-/*router.post('/', [validate], (req, res) => {
-
-    //VALIDA SE HA ERROS NA REQUISIÇÃO
-    const erros = expressValidator.validationResult(req);
-    if (!erros.isEmpty()) {
-        return res.status(422).send({ erros: erros.array() });
-    }
-
-    const temperatureSchema = new TemperatureSchema({
-        temperature: req.body.temperature
-    })
-
-    temperatureSchema.save()
-        .then(result => {
-            console.log(result)
-            res.status(201).send();
-        }).catch(err => {
-            consolge.log(err)
-            res.status(400).send()
-        })
-
-});*/
 
 router.delete('/', (req, res) => {
 
@@ -124,4 +94,5 @@ router.put('/:value', (req, res) => {
 });
 
 module.exports = router;
+
 
